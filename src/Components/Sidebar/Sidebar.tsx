@@ -1,6 +1,12 @@
+import Lowerhalf from "./Lowerhalf"
+import Upperhalf from "./Upperhalf"
+
 function Sidebar() {
   return (
-    <div className="basis-3/12 flex flex-col items-center text-white h-full rounded-tl-3xl rounded-bl-3xl" style={{background: 'rgba(255,255,255,0.81)'}}>Sidebar</div>
+    <div className="basis-3/12 flex flex-col items-center justify-between text-black h-full rounded-tl-3xl rounded-bl-3xl" style={{background: 'rgba(255,255,255,0.81)'}}>
+        <Upperhalf/>
+        <Lowerhalf/>
+    </div>
   )
 }
 
