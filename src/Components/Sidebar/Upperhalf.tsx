@@ -2,7 +2,7 @@ import { AiOutlineSearch } from "react-icons/ai";
 import CloudyNight from "../../Assets/CloudyNight.png";
 function Upperhalf() {
   return (
-    <div className="h-[50%] w-full p-4 flex flex-col justify-center items-start basis-[65%]">
+    <div className="max-h-[30rem] w-full p-4 flex flex-col justify-center items-start basis-[65%]">
       <div className="flex flex-start w-full mt-8">
         {/* Search bar Div */}
         <input placeholder="Search..." className="px-2 py-2 rounded-tl-md rounded-bl-md basis-[90%] bg-white text-black" type="text" />
