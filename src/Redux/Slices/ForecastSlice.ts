@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import ForecastDataState from "../../Interfaces/ForecastDataState";
-import axiosInstance from "../../Config/axiosInstance";
+import axiosInstance from '../../Config/axiosInstance';
 const initialState : ForecastDataState = {
     status: 'default',
     data: {
@@ -28,40 +28,46 @@ const initialState : ForecastDataState = {
     },
 }
 
-export const fetchData = createAsyncThunk('data/fetchdata', async()=>{
+export const fetchData = createAsyncThunk('data/fetchdata', async (city: string) => {
     try {
-        const response = await axiosInstance.get(`forecast.json?key=${import.meta.env.VITE_API_KEY}&days=7&aqi=yes`);
+        const response = await axiosInstance.get(`forecast.json?key=${import.meta.env.VITE_API_KEY}&days=7&aqi=yes&q=${city}`);
+        console.log(response);
         return response;
-    } catch (error) {
+    } catch(error) {
         console.log(error);
     }
-})
+});
 
 const forecastSlice = createSlice({
-    name:'forecast',
+    name: 'forecast',
     initialState,
-    reducers: {},
-    extraReducers: (builder)=> {
-        builder.addCase(fetchData.fulfilled,(state,action)=>{
+    reducers: {
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchData.fulfilled, (state, action) => {
             if(!action.payload) return;
+            console.log(action.payload)
             state.status = 'success';
-            const {location,forecast, current} = action.payload.data;
-            // Setting location
+            const {location, forecast, current} = action.payload.data;
+
+            // setting location
             state.data.location.country = location?.country;
             state.data.location.region = location?.region;
             state.data.location.name = location?.name;
             state.data.location.localtime = location?.localtime;
 
-            state.data.dayForecast = forecast.forecastday.map((forecastItem: any) => {
+            state.data.dayForecast = forecast.forecastday.map((foreCastItem : any) => {
                 return {
-                    date:forecastItem.date,
-                    avgtemp_c: forecastItem.avgtemp_c,
-                    avgtemp_f:forecastItem.avgtemp_f,
-                    condition:forecastItem.condition.text,
+                    date: foreCastItem.date,
+                    avgtemp_c: foreCastItem.day.avgtemp_c,
+                    avgtemp_f: foreCastItem.day.avgtemp_f,
+                    condition: foreCastItem.day.condition.text,
                 }
             });
 
-            // Setting currentdata
+
+            // setting currentData
+
             state.data.currentData.uv = current.uv;
             state.data.currentData.wind_kmph = current.wind_kph;
             state.data.currentData.humidity = current.humidity;
@@ -74,11 +80,13 @@ const forecastSlice = createSlice({
             state.data.currentData.sunrise = forecast.forecastday[0].astro.sunrise;
             state.data.currentData.sunset = forecast.forecastday[0].astro.sunset;
             state.data.currentData.chance_of_rain = forecast.forecastday[0].day.daily_chance_of_rain;
+            
         })
-        .addCase(fetchData.pending,(state)=>{
+        .addCase(fetchData.pending, (state) => {
             state.status = 'loading';
         })
     }
 });
+
 
 export default forecastSlice.reducer;
